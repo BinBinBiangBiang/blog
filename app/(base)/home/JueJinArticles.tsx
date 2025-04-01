@@ -5,7 +5,7 @@ import { ContentCard } from './ContentCard'
 import { useEffect, useState } from 'react'
 import { Skeleton } from '@/components/ui/skeleton'
 import Link from 'next/link'
-import { Article } from '@prisma/client'
+import { Article } from '@/types/juejin'
 
 function NoFound() {
   return <p className="text-center text-gray-500 dark:text-gray-400 py-8">No articles found.</p>

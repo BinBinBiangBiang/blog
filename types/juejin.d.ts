@@ -1,3 +1,23 @@
+export type Article = {
+  id: string
+  userId: number
+  title: string
+  content: string
+  classify?: string
+  coverImg?: string
+  summary: string
+  source?: string
+  views: number
+  likes: number
+  favorites: number
+  showNumber: number
+  status: string
+  createdAt: Date
+  updatedAt?: Date | null
+  deletedAt?: Date | null
+  isDeleted?: number | null
+}
+
 export interface ArticleInfo {
   article_id: string
   user_id: string

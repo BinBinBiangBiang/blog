@@ -1,6 +1,6 @@
 import { sendJson } from '@/lib/utils'
 import { prisma } from '@/prisma'
-import { Article } from '@prisma/client'
+import { Article } from '@/types/juejin'
 import { kv } from '@vercel/kv'
 import { TimeInSeconds } from '@/lib/enums'
 

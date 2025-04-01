@@ -1,13 +1,32 @@
 'use client'
 
 import { useEffect, useState, use } from 'react'
-import { Article } from '@prisma/client'
 import { Card, CardContent } from '@/components/ui/card'
 import { toast } from '@/components/hooks/use-toast'
 import { getReadingTime } from '@/lib/getReadingTime'
 import { Anchor } from './anchor/index'
 import { BytemdViewer } from '@/components/bytemd/viewer'
 import { Icon } from '@iconify/react'
+
+type Article = {
+  id: string
+  userId: number
+  title: string
+  content: string
+  classify?: string
+  coverImg?: string
+  summary: string
+  source?: string
+  views: number
+  likes: number
+  favorites: number
+  showNumber: number
+  status: string
+  createdAt: Date
+  updatedAt?: Date | null
+  deletedAt?: Date | null
+  isDeleted?: number | null
+}
 
 export default function Component(props: { params: Promise<{ id: string }> }) {
   const params = use(props.params)

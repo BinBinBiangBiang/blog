@@ -1,28 +1,75 @@
 import { sendJson } from '@/lib/utils'
-import { Octokit } from 'octokit'
+import { kv } from '@vercel/kv'
+import type { GithubPinnedRepoInfo } from '@/types/github'
+import { TimeInSeconds } from '@/lib/enums'
+
+const InfoKey = 'blog-github-pinned-repo-info'
+const GITHUB_GRAPHQL_URL = 'https://api.github.com/graphql'
+
+const buildQuery = (username: string) => `
+{
+  user(login: "${username}") {
+    pinnedItems(first: 6, types: [REPOSITORY]) {
+      totalCount
+      edges {
+        node {
+          ... on Repository {
+            id
+            name
+            description
+            url
+            stargazerCount
+            forkCount
+            primaryLanguage {
+              name
+              color
+            }
+          }
+        }
+      }
+    }
+  }
+}
+`
+
+async function fetchPinnedRepos() {
+  const query = buildQuery(process.env.NEXT_PUBLIC_GITHUB_USER_NAME!)
+
+  const response = await fetch(GITHUB_GRAPHQL_URL, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${process.env.GITHUB_API_TOKEN}`
+    },
+    body: JSON.stringify({ query })
+  })
+
+  if (!response.ok) {
+    const errorMessage = await response.text()
+    throw new Error(`获取 GitHub 仓库信息失败: ${response.statusText} - ${errorMessage}`)
+  }
+
+  const res = await response.json()
+  return (
+    res?.data?.user?.pinnedItems?.edges?.map(
+      (edge: Record<string, string | number>) => edge.node
+    ) || []
+  )
+}
 
 export async function GET() {
   try {
-    const username = process.env.NEXT_PUBLIC_GITHUB_USER_NAME
-    
-    if (!username) {
-      return sendJson({ code: -1, msg: 'GitHub 用户名未配置' })
+    const cachedInfo = await kv.get<GithubPinnedRepoInfo>(InfoKey)
+    if (cachedInfo) {
+      return sendJson({ data: cachedInfo })
     }
-    
-    const octokit = new Octokit({
-      auth: process.env.GITHUB_API_TOKEN
-    })
-    
-    // 获取用户的仓库
-    const { data: repos } = await octokit.request('GET /users/{username}/repos', {
-      username,
-      sort: 'updated',
-      per_page: 6
-    })
-    
-    return sendJson({ data: repos })
+
+    const pinnedRepos = await fetchPinnedRepos()
+    await kv.set(InfoKey, pinnedRepos, { ex: TimeInSeconds.oneWeek })
+
+    return sendJson({ data: pinnedRepos })
   } catch (error) {
-    console.error('获取 GitHub 置顶仓库失败:', error)
-    return sendJson({ code: -1, msg: `获取 GitHub 置顶仓库失败: ${error}` })
+    console.error(error)
+    return sendJson({ code: -1, msg: '获取 GitHub 仓库信息失败!' })
   }
 }

@@ -55,8 +55,8 @@
     "next-auth": "^4.24.10",
     "next-themes": "^0.4.3",
     "nodemailer": "^6.9.16",
-    "react": "19.0.0-rc-66855b96-20241106",
-    "react-dom": "19.0.0-rc-66855b96-20241106",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
     "react-markdown": "^9.0.1",
     "react-p5": "^1.4.1",
     "react-spinners": "^0.14.1",
@@ -75,7 +75,7 @@
     "@types/jsonwebtoken": "^9.0.7",
     "@types/node": "^22.9.0",
     "@types/nodemailer": "^6.4.16",
-    "@types/react": "npm:types-react@19.0.0-rc.1",
+    "@types/react": "^18.2.48",
     "@types/react-dom": "npm:types-react-dom@19.0.0-rc.1",
     "@types/rss": "^0.0.32",
     "@types/uuid": "^10.0.0",
@@ -97,9 +97,6 @@
     ]
   },
   "pnpm": {
-    "overrides": {
-      "@types/react": "npm:types-react@19.0.0-rc.1",
-      "@types/react-dom": "npm:types-react-dom@19.0.0-rc.1"
-    }
+    "overrides": {}
   }
 }

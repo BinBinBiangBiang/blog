@@ -23,10 +23,16 @@ export interface PublishArticleInfo {
 }
 
 // =================================== 留言板 ===================================
-export interface GuestbookMessage extends Message {
+export interface GuestbookMessage {
+  id: string;
+  content: string;
+  createdAt: Date;
+  updatedAt: Date;
+  deletedAt?: Date | null;
   author: {
-    name: string
-    email: string
-    image: string
-  }
+    id: string;
+    name?: string | null;
+    image?: string | null;
+  };
+  authorId: string;
 }

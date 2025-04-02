@@ -5,7 +5,8 @@ import remarkGfm from 'remark-gfm'
 
 const NonMemoizedMarkdown = ({ children }: { children: string }) => {
   const components: Partial<Components> = {
-    code: ({ inline, className, children, ...props }) => {
+    code: ({ className, children, ...props }: any) => {
+      const inline = props.inline || false;
       const match = /language-(\w+)/.exec(className || '')
       return !inline && match ? (
         <pre
@@ -51,12 +52,20 @@ const NonMemoizedMarkdown = ({ children }: { children: string }) => {
         </span>
       )
     },
-    a: ({ children, ...props }) => {
+    a: ({ children, href, ...props }) => {
+      if (!href) return <span {...props}>{children}</span>;
+      
       return (
-        <Link className="text-blue-500 hover:underline" target="_blank" rel="noreferrer" {...props}>
+        <Link 
+          href={href} 
+          className="text-blue-500 hover:underline" 
+          target="_blank" 
+          rel="noreferrer" 
+          {...props}
+        >
           {children}
         </Link>
-      )
+      );
     },
     h1: ({ children, ...props }) => {
       return (

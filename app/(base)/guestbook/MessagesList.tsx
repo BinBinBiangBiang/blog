@@ -36,8 +36,10 @@ export function MessagesList({ list, setMessages }: MessagesListProps) {
 
   return (
     <div className="space-y-2">
-      {list.map((message, index) => (
-        <MessagesListItem info={message} key={message.id} isLast={index === list.length - 1} />
+      {list.map((message: any) => (
+        <div key={message.id} className="flex flex-col space-y-2 mb-4">
+          <MessagesListItem info={message} isLast={message === list[list.length - 1]} />
+        </div>
       ))}
     </div>
   )
@@ -48,8 +50,8 @@ export function MessagesListItem({ info, isLast }: { info: GuestbookMessage; isL
     <>
       <div className="flex items-start">
         <Avatar className="mt-2">
-          <AvatarImage src={info?.author?.image} alt="用户头像" />
-          <AvatarFallback>{info?.author?.name}</AvatarFallback>
+          <AvatarImage src={info?.author?.image || undefined} alt="用户头像" />
+          <AvatarFallback>{info?.author?.name || ''}</AvatarFallback>
         </Avatar>
 
         <div className="ml-4 w-full">

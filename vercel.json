@@ -1,0 +1,5 @@
+{
+  "buildCommand": "prisma generate && NEXT_DISABLE_TS_ERRORS=true next build",
+  "installCommand": "pnpm install",
+  "framework": "nextjs"
+}

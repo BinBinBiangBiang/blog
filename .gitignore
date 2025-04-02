@@ -13,6 +13,7 @@ dist-ssr
 *.local
 .next
 .env
+!prisma/schema.prisma
 
 # Editor directories and files
 .vscode/*

@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
-    "build": "prisma generate && NEXT_DISABLE_TS_ERRORS=true next build",
+    "build": "npx prisma generate && NEXT_DISABLE_TS_ERRORS=true next build",
     "postbuild": "next-sitemap",
     "start": "next start",
     "lint": "next lint",
@@ -89,7 +89,8 @@
     "prettier": "^3.3.3",
     "sass": "^1.79.4",
     "tailwindcss": "^3.4.14",
-    "typescript": "^5.6.3"
+    "typescript": "^5.6.3",
+    "prisma": "^5.22.0"
   },
   "lint-staged": {
     "**/*.{tsx,ts}": [

@@ -1,7 +1,4 @@
 import { sendJson } from '@/lib/utils'
-import { kv } from '@vercel/kv'
-import type { JuejinUserInfo } from '@/types/juejin'
-import { TimeInSeconds } from '@/lib/enums'
 
 const InfoKey = 'blog-juejin-user-info'
 const JUEJIN_API_URL = `https://api.juejin.cn/user_api/v1/user/get?user_id=${process.env.JUEJIN_USER_ID}`
@@ -24,16 +21,7 @@ async function fetchUserInfo() {
 
 export async function GET() {
   try {
-    // 取出缓存
-    const cachedInfo = await kv.get<JuejinUserInfo>(InfoKey)
-    if (cachedInfo) {
-      return sendJson({ data: cachedInfo })
-    }
-
     const userInfo = await fetchUserInfo()
-
-    // 缓存数据
-    await kv.set(InfoKey, userInfo, { ex: TimeInSeconds.oneDay })
 
     return sendJson({ data: userInfo })
   } catch (error) {

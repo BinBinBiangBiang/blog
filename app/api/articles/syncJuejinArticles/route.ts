@@ -44,7 +44,7 @@ async function addArticle(info: AnyObject) {
 
 let syncArticleNameList: string[] = []
 
-export async function getArticles(index: number) {
+async function getArticles(index: number) {
   const res = await fetch(
     `${process.env.NEXT_PUBLIC_SITE_URL}/api/proxy/juejin/articles?cursor=${index}`
   ).then((res) => res.json())
@@ -56,7 +56,7 @@ export async function getArticles(index: number) {
   const info = res.data
 
   for (const item of info.data) {
-    addArticle(item)
+    await addArticle(item)
 
     syncArticleNameList.push(item.article_info.title)
   }

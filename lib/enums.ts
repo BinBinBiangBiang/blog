@@ -2,14 +2,15 @@
 export const techIcons: Record<string, string> = {
   TypeScript: 'logos:typescript-icon',
   Vue: 'logos:vue',
-  NuxtJs: 'logos:nuxt',
+  React: 'logos:react',
   NextJs: 'logos:nextjs-icon',
-  NestJs: 'logos:nestjs',
-  Go: 'logos:go',
+  Redis: 'logos:redis',
+  Java: 'logos:java',
+  NodeJS: 'logos:nodejs-icon',
   Mysql: 'logos:mysql'
 }
 
-export const techStackData = ['TypeScript', 'Vue', 'NuxtJs', 'NextJs', 'NestJs', 'Go', 'Mysql']
+export const techStackData = ['TypeScript', 'Vue', 'React', 'NextJs', 'Redis', 'Java', 'NodeJS', 'Mysql']
 
 export const TimeInSeconds = {
   oneHour: 3600, // 1小时 = 3600秒

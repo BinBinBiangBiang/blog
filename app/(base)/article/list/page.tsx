@@ -59,11 +59,14 @@ async function getArticles() {
   try {
     const res = await fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/articles/all`)
 
+    console.log('日志测试res ====>', res)
+
     if (!res.ok) {
       throw new Error('Failed to fetch articles')
     }
 
     const data = await res.json()
+    console.log('日志测试data ====>', data)
     if (data.code !== 0) {
       throw new Error(data.message || '获取全部文章失败!')
     }

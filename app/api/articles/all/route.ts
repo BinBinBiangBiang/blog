@@ -1,8 +1,6 @@
 import { sendJson } from '@/lib/utils'
 import { prisma } from '@/prisma'
 
-const InfoKey = 'blog-all-articles'
-
 export async function GET() {
   try {
     const articles = await prisma.article.findMany({

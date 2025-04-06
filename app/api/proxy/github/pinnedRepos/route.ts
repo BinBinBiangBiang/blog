@@ -39,12 +39,15 @@ async function fetchPinnedRepos() {
     body: JSON.stringify({ query })
   })
 
+
   if (!response.ok) {
     const errorMessage = await response.text()
     throw new Error(`获取 GitHub 仓库信息失败: ${response.statusText} - ${errorMessage}`)
   }
 
   const res = await response.json()
+
+
   return (
     res?.data?.user?.pinnedItems?.edges?.map(
       (edge: Record<string, string | number>) => edge.node

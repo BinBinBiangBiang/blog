@@ -5,9 +5,9 @@ export async function GET() {
   const NEXT_PUBLIC_SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? ''
 
   const feed = new RSS({
-    title: 'vaebe blog | 开发者',
+    title: 'BiangBiang blog | 开发者',
     description:
-      '我是 Vaebe，一名全栈开发者，专注于前端技术。我的主要技术栈是 Vue 及其全家桶，目前也在使用 React 来构建项目，比如这个博客，它使用 Next.js。',
+      '我是 BiangBiang，一名全栈开发者，专注于前端技术。我的主要技术栈是 Vue 及其全家桶，目前也在使用 React 来构建项目，比如这个博客，它使用 Next.js。',
     site_url: NEXT_PUBLIC_SITE_URL ?? '',
     feed_url: `${NEXT_PUBLIC_SITE_URL}/feed.xml`,
     language: 'zh-CN', // 网站语言代码

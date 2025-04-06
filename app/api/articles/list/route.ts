@@ -1,6 +1,5 @@
 import { sendJson } from '@/lib/utils'
 import { prisma } from '@/prisma'
-
 export async function GET(req: Request) {
   try {
     // 从 URL 获取查询参数

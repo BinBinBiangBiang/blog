@@ -44,7 +44,7 @@ async function addArticle(info: AnyObject) {
 
 let syncArticleNameList: string[] = []
 
-async function getArticles(index: number) {
+export async function getArticles(index: number) {
   const res = await fetch(
     `${process.env.NEXT_PUBLIC_SITE_URL}/api/proxy/juejin/articles?cursor=${index}`
   ).then((res) => res.json())
@@ -85,7 +85,6 @@ export async function GET(req: Request) {
 
     await getArticles(index)
 
-    console.log(syncArticleNameList)
 
     return sendJson({ data: syncArticleNameList, msg: '同步掘金文章成功' })
   } catch (error) {

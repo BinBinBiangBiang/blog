@@ -12,12 +12,12 @@ import userIcon from '@/public/user-icon.png'
 // 社交媒体链接配置
 const SOCIAL_LINKS = {
   juejin: {
-    url: 'https://juejin.cn/user/712139266339694',
+    url: 'https://juejin.cn/user/849291463372807',
     icon: 'simple-icons:juejin',
     label: '掘金'
   },
   github: {
-    url: 'https://github.com/vaebe',
+    url: 'https://github.com/BinBinBiangBiang',
     icon: 'mdi:github',
     label: 'GitHub'
   }

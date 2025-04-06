@@ -78,7 +78,7 @@ function Subscription({ className }: { className: string }) {
       },
       body: JSON.stringify({
         toEmail: email,
-        subject: '感谢您订阅 vaebe 博客',
+        subject: '感谢您订阅 keke 博客',
         html: htmlTemplate
       })
     }).then((res) => res.json())

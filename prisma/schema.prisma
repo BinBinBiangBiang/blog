@@ -3,7 +3,7 @@ generator client {
 }
 
 datasource db {
-  provider = "mysql"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
@@ -11,7 +11,7 @@ model Article {
   id         String    @id @unique
   userId     Int
   title      String    @db.Text
-  content    String    @db.LongText
+  content    String    @db.Text
   classify   String?   @db.Text
   coverImg   String?   @db.Text
   summary    String    @db.Text

@@ -57,9 +57,7 @@ const groupArticlesByYear = (articles: Article[]): GroupedArticles => {
 
 async function getArticles() {
   try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/articles/all`, {
-      next: { revalidate: 1800 } // 缓存 30分钟 or 使用 cache: 'no-store' 不缓存
-    })
+    const res = await fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/articles/all`)
 
     if (!res.ok) {
       throw new Error('Failed to fetch articles')
@@ -93,6 +91,8 @@ export default async function ArticlesPage() {
       </div>
     )
   }
+
+  console.log('articles ====> ', articles)
 
   return (
     <div className="max-w-4xl mx-auto px-2">

@@ -4,7 +4,8 @@ import { prisma } from '@/prisma'
 export async function GET() {
   try {
     // 先同步掘金文章
-    await fetch('/api/articles/syncJuejinArticles');
+    await fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/articles/syncJuejinArticles`);
+
     const articles = await prisma.article.findMany({
       orderBy: { createdAt: 'desc' }
     })

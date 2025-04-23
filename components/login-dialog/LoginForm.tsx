@@ -86,9 +86,9 @@ const LoginForm = ({ setIsLoading }: Props) => {
             />
           </div>
         </div>
-        <Button className="w-full" type="submit">
+        {/* <Button className="w-full" type="submit">
           账号密码登录
-        </Button>
+        </Button> */}
       </form>
 
       <EmailLoginButton onClick={handleEmailLogin}></EmailLoginButton>

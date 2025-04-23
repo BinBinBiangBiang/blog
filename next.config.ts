@@ -33,7 +33,18 @@ const nextConfig: NextConfig = {
         destination: '/api/feed.xml'
       }
     ]
-  }
+  },
+
+  async headers() {
+    return [
+      {
+        source: '/(.*)',
+        headers: [
+          { key: 'Access-Control-Allow-Origin', value: '*' },
+        ],
+      },
+    ];
+  },
 }
 
 export default nextConfig

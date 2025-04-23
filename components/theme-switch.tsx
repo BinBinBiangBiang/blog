@@ -20,7 +20,7 @@ export function ThemeSwitch() {
   const { theme, setTheme } = useTheme()
 
   return (
-    <div className="fixed bottom-4 right-4">
+    <div className="fixed bottom-4 left-4">
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button size="icon" className="p-2 rounded-full" aria-label="Theme switcher">

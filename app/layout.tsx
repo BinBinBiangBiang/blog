@@ -1,15 +1,16 @@
 import './globals.css'
-import { Inter as FontSans } from 'next/font/google'
+// import { Inter as FontSans } from 'next/font/google'
 import { cn } from '@/lib/utils'
 import Script from 'next/script'
 import { Analytics } from '@vercel/analytics/react'
 import { Providers } from './providers'
 import { Metadata } from 'next'
+import Head from 'next/head'
 
-const fontSans = FontSans({
-  subsets: ['latin'],
-  variable: '--font-sans'
-})
+// const fontSans = FontSans({
+//   subsets: ['latin'],
+//   variable: '--font-sans'
+// })
 
 export const metadata: Metadata = {
   title: 'keke blog',
@@ -52,10 +53,15 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       />
       <body
         className={cn(
-          'min-h-screen flex flex-col bg-white dark:bg-black text-black dark:text-white',
-          fontSans.variable
+          'min-h-screen flex flex-col bg-white dark:bg-black text-black dark:text-white'
         )}
       >
+        <Head>
+          <link
+            href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+            rel="stylesheet"
+          />
+        </Head>
         <Providers>{children}</Providers>
         <Analytics />
       </body>

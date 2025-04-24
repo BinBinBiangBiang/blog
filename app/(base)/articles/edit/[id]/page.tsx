@@ -1,27 +1,49 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState, use } from 'react'
 import { toast } from '@/components/hooks/use-toast'
-import { PublishDialog } from '@/app/article/PublishDialog'
+import { PublishDialog } from '@/app/(base)/articles/PublishDialog'
 import { useRouter } from 'next/navigation'
 import { BytemdEditor } from '@/components/bytemd/editor'
 import { useImmer } from 'use-immer'
 import { PublishArticleInfo } from '@/types'
-import { HeaderComponent } from '@/app/article/Header'
+import { HeaderComponent } from '@/app/(base)/articles/Header'
 
-export default function PublishArticle() {
-  const router = useRouter()
-
+export default function PublishArticle(props: { params: Promise<{ id: string }> }) {
+  const params = use(props.params)
   const [content, setContent] = useState('')
 
   const [articleInfo, updateArticleInfo] = useImmer<PublishArticleInfo>({
-    id: '',
+    id: params.id,
     title: '',
     content: '',
     classify: '',
     coverImg: '',
     summary: ''
   })
+
+  useEffect(() => {
+    async function getData() {
+      const res = await fetch(`/api/articles/details?id=${params.id}`).then((res) => res.json())
+
+      if (res.code !== 0) {
+        toast({ variant: 'destructive', title: '警告', description: '获取文章详情失败!' })
+        return
+      }
+
+      updateArticleInfo((draft) => {
+        draft.title = res.data.title || ''
+        draft.classify = res.data.classify || ''
+        draft.coverImg = res.data.coverImg || ''
+        draft.summary = res.data.summary || ''
+      })
+
+      setContent(res.data.content)
+    }
+    getData()
+  }, [params.id, updateArticleInfo])
+
+  const router = useRouter()
 
   const [publishDialogShow, setPublishDialogShow] = useState<boolean>(false)
 
@@ -39,8 +61,8 @@ export default function PublishArticle() {
     }
 
     try {
-      const res = await fetch('/api/articles/add', {
-        method: 'POST',
+      const res = await fetch('/api/articles/update', {
+        method: 'PUT',
         headers: {
           'Content-Type': 'application/json'
         },
@@ -49,12 +71,12 @@ export default function PublishArticle() {
 
       if (res.code === 0) {
         router.push('/article/list')
-        toast({ title: '成功', description: '文章发布成功!' })
+        toast({ title: '成功', description: '编辑成功!' })
       } else {
-        toast({ title: '失败', description: '发布文章时出现错误', variant: 'destructive' })
+        toast({ title: '失败', description: '编辑文章时出现错误', variant: 'destructive' })
       }
     } catch {
-      toast({ title: '失败', description: '发布文章时出现错误', variant: 'destructive' })
+      toast({ title: '失败', description: '编辑文章时出现错误', variant: 'destructive' })
     }
   }
 
@@ -64,10 +86,10 @@ export default function PublishArticle() {
         title={articleInfo.title}
         updateArticleInfo={updateArticleInfo}
         setPublishDialogShow={setPublishDialogShow}
-        butName="发布"
+        butName="编辑"
       ></HeaderComponent>
 
-      <BytemdEditor content={content} setContent={setContent}></BytemdEditor>
+      <BytemdEditor content={content} setContent={(val) => setContent(val)}></BytemdEditor>
 
       <PublishDialog
         articleInfo={articleInfo}

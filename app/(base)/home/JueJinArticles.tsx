@@ -75,8 +75,10 @@ export function JueJinArticles() {
 
         if (res.code === 0) {
           const list: Article[] = res?.data || []
-          const sortedData = list.sort((a, b) => b.likes - a.likes).slice(0, 6)
-          setArticles(sortedData)
+          const shuffledData = list
+            .sort(() => 0.5 - Math.random())  // 随机打乱数组顺序
+            .slice(0, 6)  // 取前6项（如果数组长度不足6则全部取出）
+          setArticles(shuffledData)
         }
       } catch (error) {
         console.error('Failed to fetch articles:', error)

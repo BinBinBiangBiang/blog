@@ -1,6 +1,6 @@
 'use client'
 
-import { ChangeEvent, memo } from 'react'
+import { ChangeEvent, memo, useState } from 'react'
 import {
   Dialog,
   DialogContent,
@@ -17,6 +17,7 @@ import { PublishArticleInfo } from '@/types'
 import { Updater } from 'use-immer'
 import Image from 'next/image'
 import { imagekitUploadFile } from '@/lib/imagekit'
+import { Loader2 } from 'lucide-react'
 
 const CATEGORIES = ['后端', '前端', 'Android', 'iOS', '人工智能', '阅读'] as const
 type Category = (typeof CATEGORIES)[number]
@@ -24,14 +25,15 @@ type Category = (typeof CATEGORIES)[number]
 interface ImageUploadProps {
   coverImg?: string
   onImageUpload: (event: ChangeEvent<HTMLInputElement>) => Promise<void>
+  isUploading: boolean
 }
 
-const ImageUpload = memo(({ coverImg, onImageUpload }: ImageUploadProps) => (
+const ImageUpload = memo(({ coverImg, onImageUpload, isUploading }: ImageUploadProps) => (
   <div className="grid gap-2">
     <Label htmlFor="cover">文章封面:</Label>
     <div className="flex items-center justify-between border border-input rounded p-1 cursor-pointer overflow-hidden">
-      <div className="w-[192px] h-[128px] border border-dashed rounded overflow-hidden">
-        {coverImg && (
+      <div className="w-[192px] h-[128px] border border-dashed rounded overflow-hidden flex items-center justify-center">
+        {coverImg ? (
           <Image
             src={coverImg}
             alt="Cover"
@@ -40,14 +42,20 @@ const ImageUpload = memo(({ coverImg, onImageUpload }: ImageUploadProps) => (
             className="max-w-full h-auto"
             priority
           />
+        ) : (
+          <span className="text-muted-foreground text-sm">未设置封面图</span>
         )}
       </div>
 
       <div className="p-4 w-[200px] text-center">
-        <label htmlFor="coverImgInput" className="cursor-pointer">
+        <label htmlFor="coverImgInput" className={`cursor-pointer ${isUploading ? 'opacity-50' : ''}`}>
           <div>
-            <span className="block text-2xl mb-2">+</span>
-            <span>点击添加封面</span>
+            {isUploading ? (
+              <Loader2 className="h-8 w-8 animate-spin mx-auto mb-2" />
+            ) : (
+              <span className="block text-2xl mb-2">+</span>
+            )}
+            <span>{isUploading ? '正在上传...' : '点击添加封面'}</span>
           </div>
           <input
             id="coverImgInput"
@@ -55,6 +63,7 @@ const ImageUpload = memo(({ coverImg, onImageUpload }: ImageUploadProps) => (
             accept="image/*"
             className="hidden"
             onChange={onImageUpload}
+            disabled={isUploading}
           />
         </label>
       </div>
@@ -71,6 +80,7 @@ interface CategorySelectorProps {
   selectedCategory?: Category
   onCategorySelect: (category: Category) => void
 }
+
 const CategorySelector = memo(({ selectedCategory, onCategorySelect }: CategorySelectorProps) => (
   <div className="grid gap-2">
     <Label htmlFor="category">
@@ -108,6 +118,8 @@ export function PublishDialog({
   onClose,
   onPublish
 }: PublishDialogProps) {
+  const [isUploading, setIsUploading] = useState(false)
+
   const validateForm = (): boolean => {
     if (!articleInfo.classify) {
       toast({ variant: 'destructive', title: '警告', description: '文章分类不能为空' })
@@ -133,13 +145,16 @@ export function PublishDialog({
       const file = event.target.files?.[0]
       if (!file) return
 
+      setIsUploading(true)
       const res = await imagekitUploadFile({ file, fileName: file.name })
 
       if (res?.code === 0 && res.data?.url) {
         updateArticleInfo((draft) => {
           draft.coverImg = res.data.url ?? ''
-
-          console.log(res.data)
+        })
+        toast({
+          title: '成功',
+          description: '封面图片已上传'
         })
       } else {
         toast({
@@ -148,14 +163,17 @@ export function PublishDialog({
           description: '图片上传失败了!'
         })
       }
-    } catch {
+    } catch (error) {
       toast({
         variant: 'destructive',
         title: '警告',
         description: '图片上传失败，似乎遇到了一些什么问题!'
       })
     } finally {
-      event.target.value = ''
+      setIsUploading(false)
+      if (event.target) {
+        event.target.value = ''
+      }
     }
   }
 
@@ -178,10 +196,14 @@ export function PublishDialog({
             selectedCategory={articleInfo.classify as Category}
             onCategorySelect={handleCategorySelect}
           />
-          <ImageUpload coverImg={articleInfo.coverImg} onImageUpload={handleImageUpload} />
+          <ImageUpload 
+            coverImg={articleInfo.coverImg} 
+            onImageUpload={handleImageUpload} 
+            isUploading={isUploading}
+          />
           <div className="grid gap-2">
             <Label htmlFor="summary">
-              编辑摘要<span className="text-red-500">*</span>:
+              文章摘要<span className="text-red-500">*</span>:
             </Label>
             <Textarea
               id="summary"
@@ -191,9 +213,12 @@ export function PublishDialog({
                   draft.summary = e.target.value
                 })
               }
-              placeholder="请输入文章摘要"
+              placeholder="请输入文章摘要，简要描述文章内容"
               rows={4}
             />
+            <p className="text-sm text-muted-foreground">
+              摘要会显示在文章列表中，帮助读者了解文章内容
+            </p>
           </div>
         </div>
         <DialogFooter>

@@ -13,7 +13,7 @@ interface HeaderProps {
 
 function HeaderComponent({ updateArticleInfo, setPublishDialogShow, title, butName }: HeaderProps) {
   return (
-    <div className="flex items-center justify-between border-b border-b-gray-200">
+    <div className="flex items-center flex-grow">
       <Input
         value={title}
         onChange={(e) =>
@@ -22,9 +22,12 @@ function HeaderComponent({ updateArticleInfo, setPublishDialogShow, title, butNa
           })
         }
         placeholder="输入文章标题..."
-        className="bg-white text-xl text-black font-bold border-none rounded-none shadow-none ring-0 !ring-offset-0 focus-visible:ring-0"
+        className="bg-white text-xl text-black font-bold border-none rounded-none shadow-none ring-0 !ring-offset-0 focus-visible:ring-0 flex-grow"
       />
-      <Button className="rounded-none shadow-none" onClick={() => setPublishDialogShow(true)}>
+      <Button 
+        className="rounded-md shadow-none ml-2" 
+        onClick={() => setPublishDialogShow(true)}
+      >
         {butName}
       </Button>
     </div>

@@ -7,16 +7,25 @@ export async function GET(req: Request) {
     const page = parseInt(searchParams.get('page') || '1')
     const pageSize = parseInt(searchParams.get('pageSize') || '10')
     const searchTerm = searchParams.get('searchTerm') || ''
+    const status = searchParams.get('status') || ''
 
     const skip = (page - 1) * pageSize
 
+    // 构建查询条件
+    const whereCondition: any = {
+      title: {
+        contains: searchTerm
+      }
+    }
+
+    // 如果指定了状态，添加到查询条件
+    if (status) {
+      whereCondition.status = status
+    }
+
     // 查询带有分页和模糊检索的文章
     const articles = await prisma.article.findMany({
-      where: {
-        title: {
-          contains: searchTerm
-        }
-      },
+      where: whereCondition,
       orderBy: { createdAt: 'desc' },
       skip: skip,
       take: pageSize
@@ -24,11 +33,7 @@ export async function GET(req: Request) {
 
     // 获取文章总数，用于前端分页
     const totalArticles = await prisma.article.count({
-      where: {
-        title: {
-          contains: searchTerm
-        }
-      }
+      where: whereCondition
     })
 
     return sendJson({

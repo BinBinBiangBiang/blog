@@ -271,7 +271,7 @@ export default function ArticlesList() {
                             size="icon"
                             asChild
                           >
-                            <Link href={`/article/${article.id}`} target="_blank">
+                            <Link href={`/articles/${article.id}`} target="_blank">
                               <Eye className="h-4 w-4" />
                             </Link>
                           </Button>

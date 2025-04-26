@@ -5,7 +5,7 @@ export const routerList = [
     icon: 'mdi-light:home'
   },
   {
-    path: '/article/list',
+    path: '/articles/list',
     name: '文章',
     icon: 'ph:article-light'
   },

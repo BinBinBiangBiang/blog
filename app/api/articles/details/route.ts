@@ -10,8 +10,23 @@ export async function GET(req: Request) {
       return sendJson({ code: -1, msg: 'id 不存在' })
     }
 
+    // 获取文章详情
     const article = await prisma.article.findUnique({
       where: { id: id }
+    })
+
+    if (!article) {
+      return sendJson({ code: -1, msg: '文章不存在' })
+    }
+
+    // 更新文章访问量
+    await prisma.article.update({
+      where: { id },
+      data: {
+        views: {
+          increment: 1
+        }
+      }
     })
 
     return sendJson({ data: article })

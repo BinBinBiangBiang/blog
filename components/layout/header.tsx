@@ -56,7 +56,7 @@ function UserAvatar({ session }: { session: Session }) {
         <DropdownMenuSeparator />
 
         {session?.user?.role === '00' && (
-          <Link href="/article/add" target="_blank">
+          <Link href="/articles/add" target="_blank">
             <DropdownMenuItem className="cursor-pointer">
               <div className="flex items-center">
                 <Icon icon="lucide:feather" className="w-5 h-5 mx-2" />

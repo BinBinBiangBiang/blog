@@ -14,7 +14,12 @@ const ADMIN_APIS = [
 ]
 
 // 用户登录后可以访问的 api
-const USER_APIS = ['/api/conversation']
+const USER_APIS = [
+  '/api/conversation',
+  '/api/articles/comments',
+  '/api/articles/likes',
+  '/api/articles/favorites'
+]
 
 export default withAuth(
   function middleware(req) {

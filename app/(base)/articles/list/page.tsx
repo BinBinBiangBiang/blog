@@ -40,6 +40,7 @@ import {
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog'
 import { toast } from '@/components/hooks/use-toast'
+import { useSession } from 'next-auth/react'
 
 const STATUS_MAP = {
   '00': { label: '草稿', color: 'text-yellow-500' },
@@ -62,6 +63,7 @@ interface Article {
 }
 
 export default function ArticlesList() {
+  const { data: session } = useSession()
   const [articles, setArticles] = useState<Article[]>([])
   const [loading, setLoading] = useState(true)
   const [searchTerm, setSearchTerm] = useState('')
@@ -192,12 +194,14 @@ export default function ArticlesList() {
     <div className="container py-6">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold">文章管理</h1>
-        <Link href="/articles/add">
-          <Button>
-            <Plus className="mr-2 h-4 w-4" />
-            新建文章
-          </Button>
-        </Link>
+        {session?.user?.role === '00' && (
+          <Link href="/articles/add">
+            <Button>
+              <Plus className="mr-2 h-4 w-4" />
+              新建文章
+            </Button>
+          </Link>
+        )}
       </div>
 
       <Card className="mb-6">
@@ -404,12 +408,14 @@ export default function ArticlesList() {
           ) : (
             <div className="text-center py-8">
               <p className="text-muted-foreground mb-4">没有找到文章</p>
-              <Link href="/articles/add">
-                <Button>
-                  <Plus className="mr-2 h-4 w-4" />
-                  新建文章
-                </Button>
-              </Link>
+              {session?.user?.role === '00' && (
+                <Link href="/articles/add">
+                  <Button>
+                    <Plus className="mr-2 h-4 w-4" />
+                    新建文章
+                  </Button>
+                </Link>
+              )}
             </div>
           )}
         </CardContent>

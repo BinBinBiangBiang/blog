@@ -8,6 +8,8 @@ export async function GET(req: Request) {
     const pageSize = parseInt(searchParams.get('pageSize') || '10')
     const searchTerm = searchParams.get('searchTerm') || ''
     const status = searchParams.get('status') || ''
+    const classify = searchParams.get('classify') || ''
+    const source = searchParams.get('source') || ''
 
     const skip = (page - 1) * pageSize
 
@@ -21,6 +23,16 @@ export async function GET(req: Request) {
     // 如果指定了状态，添加到查询条件
     if (status) {
       whereCondition.status = status
+    }
+
+    // 如果指定了分类，添加到查询条件
+    if (classify) {
+      whereCondition.classify = classify
+    }
+
+    // 如果指定了来源，添加到查询条件
+    if (source) {
+      whereCondition.source = source
     }
 
     // 查询带有分页和模糊检索的文章

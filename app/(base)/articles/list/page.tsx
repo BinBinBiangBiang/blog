@@ -66,6 +66,8 @@ export default function ArticlesList() {
   const [loading, setLoading] = useState(true)
   const [searchTerm, setSearchTerm] = useState('')
   const [statusFilter, setStatusFilter] = useState<string>('all')
+  const [classifyFilter, setClassifyFilter] = useState<string>('all')
+  const [sourceFilter, setSourceFilter] = useState<string>('all')
   const [totalArticles, setTotalArticles] = useState(0)
   const [currentPage, setCurrentPage] = useState(1)
   const [totalPages, setTotalPages] = useState(1)
@@ -80,6 +82,8 @@ export default function ArticlesList() {
         pageSize: pageSize.toString(),
         searchTerm,
         status: statusFilter !== 'all' ? statusFilter : '',
+        classify: classifyFilter !== 'all' ? classifyFilter : '',
+        source: sourceFilter !== 'all' ? sourceFilter : '',
       })
       
       const res = await fetch(`/api/articles/list?${params}`).then(res => res.json())
@@ -169,7 +173,7 @@ export default function ArticlesList() {
   // 初始加载和条件变化时获取数据
   useEffect(() => {
     fetchArticles()
-  }, [currentPage, statusFilter])
+  }, [currentPage, statusFilter, classifyFilter, sourceFilter])
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault()
@@ -214,7 +218,7 @@ export default function ArticlesList() {
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
             </div>
-            <div className="grid w-full max-w-sm items-center gap-1.5">
+            <div className="grid max-w-sm items-center gap-1.5">
               <Label htmlFor="status">状态</Label>
               <Select
                 value={statusFilter}
@@ -227,6 +231,41 @@ export default function ArticlesList() {
                   <SelectItem value="all">全部状态</SelectItem>
                   <SelectItem value="00">草稿</SelectItem>
                   <SelectItem value="01">已发布</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="grid max-w-sm items-center gap-1.5">
+              <Label htmlFor="classify">分类</Label>
+              <Select
+                value={classifyFilter}
+                onValueChange={setClassifyFilter}
+              >
+                <SelectTrigger className="w-[180px]">
+                  <SelectValue placeholder="选择分类" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">全部分类</SelectItem>
+                  <SelectItem value="前端">前端</SelectItem>
+                  <SelectItem value="后端">后端</SelectItem>
+                  <SelectItem value="数据库">数据库</SelectItem>
+                  <SelectItem value="DevOps">DevOps</SelectItem>
+                  <SelectItem value="其他">其他</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="grid max-w-sm items-center gap-1.5">
+              <Label htmlFor="source">来源</Label>
+              <Select
+                value={sourceFilter}
+                onValueChange={setSourceFilter}
+              >
+                <SelectTrigger className="w-[180px]">
+                  <SelectValue placeholder="选择来源" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">全部来源</SelectItem>
+                  <SelectItem value="00">博客原创</SelectItem>
+                  <SelectItem value="01">掘金同步</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -271,7 +310,10 @@ export default function ArticlesList() {
                             size="icon"
                             asChild
                           >
-                            <Link href={`/articles/${article.id}`} target="_blank">
+                            <Link 
+                              href={article.source === '01' ? `https://juejin.cn/post/${article.id}` : `/articles/${article.id}`} 
+                              target="_blank"
+                            >
                               <Eye className="h-4 w-4" />
                             </Link>
                           </Button>

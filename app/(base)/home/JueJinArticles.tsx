@@ -74,7 +74,8 @@ export function JueJinArticles() {
         const res = await fetch('/api/articles/all').then((res) => res.json())
 
         if (res.code === 0) {
-          const list: Article[] = res?.data || []
+          // 过滤掉非掘金文章
+          const list: Article[] = res?.data.filter((item: Article) => item.source === '01') || []
           const shuffledData = list
             .sort(() => 0.5 - Math.random())  // 随机打乱数组顺序
             .slice(0, 6)  // 取前6项（如果数组长度不足6则全部取出）

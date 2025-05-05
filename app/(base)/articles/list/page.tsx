@@ -322,7 +322,7 @@ export default function ArticlesList() {
                             </Link>
                           </Button>
                           
-                          {article.source === '00' && (
+                          {session?.user?.role === '00' && article.source === '00' && (
                             <>
                               <Button 
                                 variant="outline" 

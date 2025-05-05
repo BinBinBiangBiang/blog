@@ -42,6 +42,13 @@ const LoginForm = ({ setIsLoading }: Props) => {
       return
     }
 
+    // 验证邮箱格式
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    if (!emailRegex.test(account)) {
+      toast({ title: '登录失败', description: '请输入正确的邮箱格式', variant: 'destructive' })
+      return
+    }
+
     setIsLoading(true)
 
     signIn('email', { email: account, callbackUrl: '/auth/verify-request?provider=email' }).catch(

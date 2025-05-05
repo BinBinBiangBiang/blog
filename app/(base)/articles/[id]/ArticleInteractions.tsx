@@ -147,25 +147,48 @@ export function ArticleInteractions({ articleId }: ArticleInteractionsProps) {
 
   // 分享文章
   const handleShare = () => {
-    if (navigator.share) {
-      navigator.share({
-        title: document.title,
-        url: window.location.href
-      })
-        .then(() => toast({ title: '分享成功', description: '文章链接已复制' }))
-        .catch(() => {
-          // 用户取消分享不需要提示错误
-        })
-    } else {
-      // 如果不支持原生分享，则复制链接到剪贴板
-      navigator.clipboard.writeText(window.location.href)
-        .then(() => toast({ title: '链接已复制', description: '可以分享给朋友了' }))
-        .catch(() => toast({ 
-          title: '复制失败', 
-          description: '无法复制链接，请手动复制浏览器地址', 
-          variant: 'destructive' 
-        }))
-    }
+    const title = document.title
+    const url = window.location.href
+    const description = document.querySelector('meta[name="description"]')?.getAttribute('content') || ''
+    const imageUrl = document.querySelector('meta[property="og:image"]')?.getAttribute('content') || ''
+
+    // 创建分享菜单
+    const shareMenu = document.createElement('div')
+    shareMenu.className = 'fixed inset-0 bg-black/50 flex items-center justify-center z-50'
+    shareMenu.innerHTML = `
+      <div class="bg-white rounded-lg p-4 max-w-sm w-full">
+        <h3 class="text-lg font-semibold mb-4">分享到</h3>
+        <div class="grid grid-cols-2 gap-4">
+          <a href="https://connect.qq.com/widget/shareqq/index.html?url=${encodeURIComponent(url)}&title=${encodeURIComponent(title)}&pics=${encodeURIComponent(imageUrl)}&summary=${encodeURIComponent(description)}" 
+             target="_blank" 
+             class="flex items-center space-x-2 p-2 hover:bg-gray-100 rounded">
+            <img src="https://qzonestyle.gtimg.cn/qzone/space_item/pre/0/66768.gif" alt="QQ" class="w-6 h-6"/>
+            <span>QQ</span>
+          </a>
+          
+          <a href="https://service.weibo.com/share/share.php?url=${encodeURIComponent(url)}&title=${encodeURIComponent(title)}&pic=${encodeURIComponent(imageUrl)}" 
+             target="_blank" 
+             class="flex items-center space-x-2 p-2 hover:bg-gray-100 rounded">
+            <img src="https://www.weibo.com/favicon.ico" alt="微博" class="w-6 h-6"/>
+            <span>微博</span>
+          </a>
+        </div>
+
+        <div class="mt-4">
+          <button 
+            onclick="navigator.clipboard.writeText('${url}').then(() => alert('链接已复制到剪贴板'))" 
+            class="flex items-center space-x-2 p-2 hover:bg-gray-100 rounded w-full">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" />
+            </svg>
+            <span>复制链接</span>
+          </button>
+        </div>
+
+        <button class="mt-4 w-full py-2 bg-gray-100 rounded hover:bg-gray-200" onclick="this.parentElement.parentElement.remove()">取消</button>
+      </div>
+    `
+    document.body.appendChild(shareMenu)
   }
 
   return (

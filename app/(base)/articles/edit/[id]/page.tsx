@@ -53,6 +53,30 @@ export default function EditArticle(props: { params: Promise<{ id: string }> }) 
 
   const [publishDialogShow, setPublishDialogShow] = useState<boolean>(false)
 
+  // 发送通知给订阅者
+  const sendNotificationToSubscribers = async (articleId: string) => {
+    try {
+      const res = await fetch('/api/articles/sendNotification', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ articleId })
+      }).then(res => res.json())
+
+      if (res.code === 0) {
+        toast({ 
+          title: '通知发送成功', 
+          description: `已向${res.data.sentCount}位订阅者发送通知` 
+        })
+      } else {
+        console.error('发送通知失败:', res.msg)
+      }
+    } catch (error) {
+      console.error('发送通知出错:', error)
+    }
+  }
+
   // 更新文章（无论是草稿还是发布状态）
   const handleSaveArticle = async (status?: string) => {
     if (!articleInfo.title) {
@@ -67,6 +91,8 @@ export default function EditArticle(props: { params: Promise<{ id: string }> }) 
 
     // 使用传入的状态或保持当前状态不变
     const newStatus = status || articleStatus
+    const wasPublished = articleStatus === '01'
+    const willBePublished = newStatus === '01'
 
     setIsSaving(true)
     try {
@@ -81,6 +107,12 @@ export default function EditArticle(props: { params: Promise<{ id: string }> }) 
       if (res.code === 0) {
         const actionText = status === '00' ? '保存为草稿' : (status === '01' ? '发布' : '更新');
         toast({ title: '成功', description: `文章已${actionText}!` })
+        
+        // 如果文章状态从非发布变为发布，发送邮件通知
+        if (!wasPublished && willBePublished) {
+          await sendNotificationToSubscribers(articleInfo.id)
+        }
+        
         router.push('/articles/list')
       } else {
         toast({ 

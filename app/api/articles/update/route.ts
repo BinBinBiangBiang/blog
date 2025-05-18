@@ -1,26 +1,52 @@
-import { sendJson } from '@/lib/utils'
-import { prisma } from '@/prisma'
+import { NextResponse } from 'next/server'
+import { prisma } from '@/lib/prisma'
+import { getServerSession } from 'next-auth'
+import { authOptions } from '@/lib/auth'
 
 export async function PUT(req: Request) {
   try {
-    const body = await req.json()
-    const { id, title, content, classify, coverImg, summary, status } = body
+    const session = await getServerSession(authOptions)
+    
+    if (!session?.user || session.user.role !== '00') {
+      return NextResponse.json(
+        { code: 1, msg: '无权限' },
+        { status: 403 }
+      )
+    }
 
-    const updatedArticle = await prisma.article.update({
-      where: { id },
-      data: {
-        title,
-        content,
-        classify,
-        coverImg,
-        summary,
-        status
-      }
+    const { id, status, ...data } = await req.json()
+
+    if (!id) {
+      return NextResponse.json(
+        { code: 1, msg: '缺少必要参数' },
+        { status: 400 }
+      )
+    }
+
+    // 获取文章当前状态
+    const currentArticle = await prisma.article.findUnique({
+      where: { id }
     })
 
-    return sendJson({ data: updatedArticle })
+    if (!currentArticle) {
+      return NextResponse.json(
+        { code: 1, msg: '文章不存在' },
+        { status: 404 }
+      )
+    }
+
+    // 更新文章
+    const article = await prisma.article.update({
+      where: { id },
+      data: { status, ...data }
+    })
+
+    return NextResponse.json({ code: 0, msg: '更新成功', data: article })
   } catch (error) {
-    console.error(error)
-    return sendJson({ code: -1, msg: '更新文章数据失败!' })
+    console.error('更新文章出错:', error)
+    return NextResponse.json(
+      { code: 1, msg: '更新失败，请稍后重试' },
+      { status: 500 }
+    )
   }
 }

@@ -91,9 +91,17 @@ export default function ArticlesList() {
       const res = await fetch(`/api/articles/list?${params}`).then(res => res.json())
       
       if (res.code === 0) {
-        setArticles(res.data.articles)
-        setTotalArticles(res.data.totalArticles)
-        setTotalPages(res.data.totalPages)
+        // 过滤文章：掘金文章始终显示，博客文章根据用户角色和状态过滤
+        const filteredArticles = res.data.articles.filter((article: Article) => {
+          // 如果是掘金同步的文章，始终显示
+          if (article.source === '01') return true
+          // 如果是博客原创的文章，管理员可以看到所有，普通用户只能看到已发布的
+          return session?.user?.role === '00' || article.status === '01'
+        })
+        
+        setArticles(filteredArticles)
+        setTotalArticles(filteredArticles.length)
+        setTotalPages(Math.ceil(filteredArticles.length / pageSize))
       } else {
         toast({ 
           title: '获取失败', 

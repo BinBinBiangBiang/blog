@@ -19,10 +19,43 @@ import {
 import { LoginDialog } from '@/components/login-dialog'
 
 function NavList() {
+  const [hoveredItem, setHoveredItem] = useState<string | null>(null)
+
   return (
     <ul className="flex space-x-1">
       {routerList.map((item) => (
-        <li key={item.path}>
+        <li 
+          key={item.path} 
+          className="relative"
+          onMouseEnter={() => setHoveredItem(item.path)}
+          onMouseLeave={() => setHoveredItem(null)}
+        >
+          {item.children ? (
+            <>
+              <div
+                className="flex items-center px-2 md:px-4 py-0.5 text-lg font-medium rounded-lg hover:bg-gray-100 dark:hover:bg-white/10 transition-all duration-100 ease-in-out cursor-pointer"
+              >
+                <Icon icon={item.icon} width={22} height={22} className="mr-1"></Icon>
+                <span className="hidden md:block">{item.name}</span>
+              </div>
+              
+              {/* 子菜单 */}
+              {hoveredItem === item.path && item.children && (
+                <div className="absolute top-full left-0 mt-1 bg-white dark:bg-gray-800 shadow-lg rounded-lg overflow-hidden py-1 min-w-[160px] z-50">
+                  {item.children.map((child) => (
+                    <Link 
+                      key={child.path} 
+                      href={child.path}
+                      className="flex items-center px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700 transition-all duration-100 ease-in-out"
+                    >
+                      <Icon icon={child.icon} width={18} height={18} className="mr-2"></Icon>
+                      <span>{child.name}</span>
+                    </Link>
+                  ))}
+                </div>
+              )}
+            </>
+          ) : (
           <Link
             href={item.path}
             className="flex items-center px-2 md:px-4 py-0.5 text-lg font-medium rounded-lg hover:bg-gray-100 dark:hover:bg-white/10 transition-all duration-100 ease-in-out"
@@ -30,6 +63,7 @@ function NavList() {
             <Icon icon={item.icon} width={22} height={22} className="mr-1"></Icon>
             <span className="hidden md:block">{item.name}</span>
           </Link>
+          )}
         </li>
       ))}
     </ul>
